@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>เลือกห้อง · Uwaver Karaoke</title>
+  <link rel="icon" href="/logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/rooms.css">
+</head>
+<body class="rooms-page">
+  <main class="rooms-shell">
+    <header class="rooms-header"><a href="/rooms"><img src="/logo.png" alt="" width="40" height="40"><strong>Uwaver Karaoke</strong></a><span>ร้องด้วยกัน คนละห้องก็ได้</span></header>
+    <div class="rooms-intro"><h1>ห้องของคุณ<br>เพลงของทุกคน</h1><p>สร้างห้อง เปิดจอร้องเพลง แล้วให้เพื่อนสแกน QR เพื่อเลือกเพลงเข้าคิว</p></div>
+    <div class="rooms-workspace">
+      <section class="room-create-panel">
+        <h2>สร้างห้องใหม่</h2>
+        <form id="createRoomForm">
+          <label for="roomNameInput">ชื่อห้อง</label><input id="roomNameInput" placeholder="เช่น ห้องประชุมใหญ่ หรือทีมการตลาด" required maxlength="40">
+          <label for="roomPinInput">ตั้ง PIN ควบคุมห้อง</label><input id="roomPinInput" type="password" inputmode="numeric" autocomplete="new-password" placeholder="ตัวเลข 4–10 หลัก" required minlength="4" maxlength="10" pattern="[0-9]{4,10}">
+          <p class="room-field-hint">ใช้ PIN นี้เปิดจอ Player และจัดการคิว ผู้ขอเพลงไม่ต้องใช้ PIN</p>
+          <button type="submit" id="createRoomBtn" class="room-primary">สร้างห้อง</button>
+          <p id="createRoomError" class="room-error" role="alert" hidden></p>
+        </form>
+      </section>
+      <section class="room-list-panel">
+        <div class="room-section-heading"><h2>เข้าห้องร้องเพลง</h2><button id="refreshRoomsBtn" type="button" class="room-text-button">รีเฟรช</button></div>
+        <form id="joinRoomForm" class="room-join-form"><label for="roomCodeInput">มีรหัสห้องแล้ว?</label><div><input id="roomCodeInput" placeholder="กรอกรหัสห้อง" maxlength="8" required autocomplete="off" autocapitalize="characters"><button type="submit">เข้าห้อง</button></div><p id="joinRoomError" class="room-error" role="alert" hidden></p></form>
+        <p id="roomsStatus" role="status">กำลังโหลดห้อง…</p>
+        <ul id="roomsList" class="rooms-list"></ul>
+      </section>
+    </div>
+    <section id="createdRoomPanel" class="created-room-panel" hidden aria-labelledby="createdRoomTitle">
+      <div><h2 id="createdRoomTitle">ห้องพร้อมแล้ว</h2><p id="createdRoomCode"></p><p>เปิดจอ Player สำหรับห้องนี้ แล้วแชร์ QR ให้ทุกคนเลือกเพลง</p><div class="created-room-actions"><a id="createdPlayerLink" class="room-primary">เปิดจอร้องเพลง</a><a id="createdRequestLink">เข้าหน้าขอเพลง</a><a id="createdAdminLink">จัดการห้อง</a></div><label for="createdRoomUrl">ลิงก์แชร์ห้อง</label><input id="createdRoomUrl" readonly><button id="copyRoomLinkBtn" type="button" class="room-text-button">คัดลอกลิงก์</button><span id="copyRoomStatus" role="status"></span></div>
+      <div class="created-room-qr"><img id="createdRoomQr" alt="QR Code เข้าห้องขอเพลง" width="220" height="220" hidden><p id="createdQrStatus" role="status">กำลังสร้าง QR Code…</p></div>
+    </section>
+    <footer class="rooms-footer">คิวและจอของแต่ละห้องแยกจากกัน · เลือกเพลงผ่านมือถือได้เลย</footer>
+  </main>
+  <script src="/js/rooms.js"></script>
+</body>
+</html>

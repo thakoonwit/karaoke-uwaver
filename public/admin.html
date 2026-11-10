@@ -1,0 +1,168 @@
+﻿<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Uwaver Karaoke — แผงควบคุม</title>
+  <link rel="icon" type="image/png" href="/logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/css/ui.css">
+  <link rel="stylesheet" href="/css/admin.css">
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="/js/room-context.js"></script>
+  <link rel="stylesheet" href="/css/rooms.css">
+</head>
+<body class="admin-page">
+<main class="admin-shell">
+  <header class="site-header admin-header">
+    <div class="brand">
+      <img src="/logo.png" class="brand-mark" alt="โลโก้ Uwaver Karaoke" width="48" height="48">
+      <div class="brand-text">
+        <h1>Uwaver Karaoke</h1>
+        <p>แผงควบคุมผู้ดูแลระบบ</p>
+      </div>
+    </div>
+    <nav class="header-actions" aria-label="ทางลัดผู้ดูแลระบบ">
+      <a href="/" class="admin-home-link admin-player-button">หน้าขอเพลง</a>
+      <button id="themeToggleBtn" aria-label="สลับโหมดสี" class="icon-btn-bare">🌙</button>
+    </nav>
+  </header>
+
+  <section id="authBox" class="auth-box admin-auth" aria-labelledby="adminLoginHeading">
+    <svg class="admin-auth-icon svg-icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="10" width="14" height="11" rx="2"></rect><path d="M8 10V7a4 4 0 0 1 8 0v3"></path><path d="M12 14v3"></path></svg>
+    <h2 id="adminLoginHeading">เข้าสู่ระบบผู้ดูแล</h2>
+    <p>กรอกรหัส PIN เพื่อควบคุมเพลงและจัดการคิว</p>
+    <form id="pinForm">
+      <div class="form-field">
+        <label class="field-label" for="pinInput">รหัส PIN</label>
+        <input type="password" id="pinInput" class="text-input" placeholder="กรอกรหัส PIN" required maxlength="10" autocomplete="current-password">
+      </div>
+      <button type="submit" class="btn-primary">เข้าสู่ระบบ</button>
+    </form>
+    <div id="adminQueuePlaceholder" class="admin-auth-note">คิวเพลงและการตั้งค่าจะแสดงหลังเข้าสู่ระบบ</div>
+  </section>
+
+  <div id="adminPanel" style="display:none;">
+    <div class="admin-dashboard">
+    <section class="admin-console" aria-labelledby="adminPlaybackHeading">
+      <div class="admin-section-heading">
+        <h2 id="adminPlaybackHeading">ควบคุมการเล่น</h2>
+        <div class="admin-player-tools">
+          <span id="adminPlayerBadge" class="badge offline">
+            <span class="dot-offline" id="adminPlayerDot"></span>
+            <span id="adminPlayerStatusText">Player ออฟไลน์</span>
+          </span>
+          <a href="/player" target="_blank" rel="noopener noreferrer" class="admin-player-link admin-player-button">เปิดหน้า Player ↗</a>
+        </div>
+      </div>
+      <div class="admin-console-grid">
+        <div class="admin-track-controls">
+          <div id="adminNowPlayingInfo"><p class="empty-state">รอเพลงจากทุกคน</p></div>
+          <div class="control-row admin-transport">
+            <button id="pauseResumeBtn" class="btn-secondary">⏸️ หยุดชั่วคราว</button>
+            <button id="skipBtn" class="btn-secondary">⏭️ ข้ามเพลง</button>
+          </div>
+        </div>
+        <div class="admin-volume-control">
+          <div class="admin-volume-heading">
+            <label class="toggle-row-label" for="playerVolumeInput">ระดับเสียง Player</label>
+            <output id="playerVolumeValue" for="playerVolumeInput">100%</output>
+          </div>
+          <input type="range" id="playerVolumeInput" min="0" max="100" step="1" value="100" aria-describedby="playerVolumeHint">
+          <p id="playerVolumeHint" class="toggle-row-sub">ปรับเสียงเพลงที่เครื่อง Player · 0% คือเงียบ</p>
+        </div>
+      </div>
+    </section>
+
+    <div class="admin-workspace">
+      <section id="adminQueueWrapper" class="admin-queue" style="display:none;" aria-labelledby="adminQueueHeading">
+        <div class="admin-queue-frame">
+        <div class="admin-section-heading admin-queue-heading">
+          <div class="admin-queue-title">
+            <h2 id="adminQueueHeading">คิวเพลงถัดไป</h2>
+            <span id="adminQueueCount" class="badge">0 เพลง</span>
+          </div>
+          <button id="clearQueueBtn" class="btn-danger">ล้างคิวทั้งหมด</button>
+        </div>
+        <div id="adminQueueContainer" class="admin-queue-list" tabindex="0" role="region" aria-label="รายการคิวเพลง เลื่อนเพื่อดูเพิ่มเติม">
+          <p class="empty-state">รอรายการเพลงจากทุกคน</p>
+        </div>
+        </div>
+      </section>
+
+      <aside class="admin-settings-stack" tabindex="0" aria-label="การตั้งค่าและการเชื่อมต่อ เลื่อนเพื่อดูเพิ่มเติม">
+        <details class="admin-disclosure admin-options" aria-labelledby="adminOptionsHeading">
+          <summary id="adminOptionsHeading">การตั้งค่าระบบ</summary>
+          <div class="admin-disclosure-content">
+          <div class="toggle-row">
+            <div>
+              <div class="toggle-row-label">อนุญาตให้ผู้ใช้จัดคิว</div>
+              <div id="userReorderStatusText" class="toggle-row-sub">ปิดอยู่ · เฉพาะแอดมินจัดคิวได้</div>
+            </div>
+            <label class="switch"><input type="checkbox" role="switch" id="toggleUserReorderSwitch" aria-label="อนุญาตให้ผู้ใช้จัดคิว"><span class="slider"></span></label>
+          </div>
+          <div class="toggle-row">
+            <div>
+              <div class="toggle-row-label">เปิดรับคำขอเพลง</div>
+              <div id="acceptingStatusText" class="toggle-row-sub">เปิดรับคำขอจากทุกคนในออฟฟิศ</div>
+            </div>
+            <label class="switch"><input type="checkbox" id="toggleAcceptingSwitch" aria-label="เปิดรับคำขอเพลง" checked><span class="slider"></span></label>
+          </div>
+          <div class="toggle-row">
+            <div>
+              <div class="toggle-row-label">ระบบ Auto-DJ</div>
+              <div id="autoDjStatusText" class="toggle-row-sub">เปิดเพลงคลอเบาๆ เมื่อคิวเพลงว่าง</div>
+            </div>
+            <label class="switch"><input type="checkbox" id="toggleAutoDjSwitch" aria-label="ระบบ Auto-DJ" checked><span class="slider"></span></label>
+          </div>
+          <div class="toggle-row">
+            <div>
+              <div class="toggle-row-label">สุ่มเพลงจากประวัติวันนี้</div>
+              <div id="todayHistoryStatusText" class="toggle-row-sub">เมื่อคิวหมด จะสุ่มเพลงที่เคยขอในวันนี้มาเล่นต่อ</div>
+            </div>
+            <label class="switch"><input type="checkbox" id="toggleTodayHistorySwitch" aria-label="สุ่มเพลงจากประวัติวันนี้" checked><span class="slider"></span></label>
+          </div>
+          </div>
+        </details>
+
+        <details class="admin-disclosure" open>
+          <summary>ขีดจำกัดการขอเพลง</summary>
+          <div class="admin-disclosure-content">
+            <div class="settings-field-row">
+              <label class="settings-field-label" for="maxQueuePerDeviceInput">จำนวนเพลงรอสูงสุดต่อเครื่อง <span class="settings-field-hint">1–50 เพลง</span></label>
+              <input type="number" id="maxQueuePerDeviceInput" class="settings-num-input" min="1" max="50" value="2">
+            </div>
+            <div class="settings-field-row">
+              <label class="settings-field-label" for="maxTrackMinutesInput">ความยาวเพลงสูงสุด <span class="settings-field-hint">1–180 นาที</span></label>
+              <div class="input-with-unit"><input type="number" id="maxTrackMinutesInput" class="settings-num-input" min="1" max="180" value="10"><span class="input-unit">นาที</span></div>
+            </div>
+            <div class="settings-field-row">
+              <label class="settings-field-label" for="cooldownMinutesInput">ระยะเวลารอระหว่างขอ <span class="settings-field-hint">0 = ไม่จำกัด</span></label>
+              <div class="input-with-unit"><input type="number" id="cooldownMinutesInput" class="settings-num-input" min="0" max="60" value="0"><span class="input-unit">นาที</span></div>
+            </div>
+            <button type="button" id="saveLimitsBtn" class="btn-primary">บันทึกการตั้งค่า</button>
+          </div>
+        </details>
+
+        <details class="admin-disclosure admin-connection">
+          <summary>QR และการเชื่อมต่อ</summary>
+          <div class="admin-disclosure-content qr-card">
+            <img id="qrCodeImg" alt="QR Code เข้าหน้าขอเพลง" width="156" height="156">
+            <p class="toggle-row-sub">สแกนในวง Wi-Fi เดียวกัน</p>
+            <div id="localUrlText" class="qr-url">กำลังโหลดที่อยู่…</div>
+            <a href="/player" target="_blank" rel="noopener noreferrer" class="admin-player-link">เปิดเครื่องเล่นกลาง ↗</a>
+          </div>
+        </details>
+      </aside>
+    </div>
+    </div><!-- /admin-dashboard -->
+  </div>
+  <footer class="site-footer">Powered by <a href="https://uwaver.site" target="_blank" rel="noopener noreferrer">Uwaver.site</a></footer>
+</main>
+<div id="toastContainer" class="toast-stack"></div>
+<script src="/js/admin.js"></script>
+</body>
+</html>

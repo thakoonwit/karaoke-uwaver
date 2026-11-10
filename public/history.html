@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ประวัติเพลงวันนี้ — Uwaver Karaoke</title>
+  <link rel="icon" type="image/png" href="/logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/css/ui.css">
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="/js/room-context.js"></script>
+  <link rel="stylesheet" href="/css/rooms.css">
+  <script src="/js/history.js" defer></script>
+</head>
+<body class="history-page">
+  <main class="history-layout">
+    <header class="site-header">
+      <a href="/" class="history-brand" aria-label="Uwaver Karaoke กลับหน้าขอเพลง">
+        <img src="/logo.png" class="brand-mark" alt="" width="48" height="48">
+        <span class="brand-text"><span class="history-wordmark">Uwaver Karaoke</span></span>
+      </a>
+      <div class="header-actions">
+        <a href="/" class="history-link">กลับหน้าขอเพลง</a>
+        <button id="historyThemeBtn" class="icon-btn-bare" aria-label="สลับโหมดสี">◐</button>
+      </div>
+    </header>
+    <section aria-labelledby="historyHeading">
+      <div class="history-heading">
+        <div>
+          <h1 id="historyHeading">วันนี้ออฟฟิศฟังอะไร</h1>
+          <p class="history-description">ประวัติเพลงที่ทุกคนขอวันนี้ รวมเพลงในคิวและเพลงที่เล่นแล้ว</p>
+          <p id="historyDate" class="history-description"></p>
+        </div>
+        <button id="historyRefreshBtn" class="btn-secondary">รีเฟรชรายการ</button>
+      </div>
+      <div class="history-summary">
+        <span id="historyCount">กำลังโหลดประวัติ…</span>
+        <span class="history-description">เรียงจากล่าสุด · เวลาไทย</span>
+      </div>
+      <p id="historyStatus" class="history-status" role="status" aria-live="polite">กำลังโหลดประวัติ…</p>
+      <ol id="sharedHistoryList" class="song-list history-list" aria-label="ประวัติเพลงที่ทุกคนขอวันนี้"></ol>
+    </section>
+    <footer class="site-footer">Uwaver Karaoke · เพลงที่ทุกคนช่วยกันเลือก</footer>
+  </main>
+</body>
+</html>

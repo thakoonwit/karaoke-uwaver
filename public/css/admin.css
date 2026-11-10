@@ -1,0 +1,125 @@
+/* Uwaver Radio admin: task-first layout, shared red/blue tokens. */
+.admin-shell { width: 100%; max-width: 1320px; margin-inline: auto; padding: var(--space-lg) var(--space-xl); }
+.admin-header { margin-bottom: var(--space-xl); padding-bottom: var(--space-lg); }
+.admin-page h2 { font-size: 1rem; line-height: 1.6; font-weight: 600; }
+.admin-home-link, .admin-player-link { color: var(--text-secondary); font-size: .82rem; text-decoration: none; display: inline-flex; align-items: center; min-height: 44px; white-space: nowrap; }
+.admin-home-link:hover, .admin-player-link:hover { color: var(--yt-red); text-decoration: underline; }
+.admin-player-button { justify-content: center; gap: var(--space-sm); padding: 10px 14px; border-radius: var(--r-sm); background: var(--action-bg); color: var(--action-ink); font-weight: 600; }
+.admin-player-button:hover { background: var(--action-hover); color: var(--action-ink); text-decoration: none; }
+.admin-auth { max-width: 440px; margin: clamp(24px, 8dvh, 80px) auto; padding: var(--space-xl); }
+.admin-auth-icon { width: 32px; height: 32px; color: var(--yt-red); margin-bottom: var(--space-md); }
+.admin-auth h2 { font-size: 1.4rem; }
+.admin-auth .form-field { text-align: left; }
+.admin-auth .text-input { letter-spacing: .1em; }
+#adminQueuePlaceholder.admin-auth-note { min-height: 0; padding: 0; margin-top: var(--space-lg); font-size: .78rem; color: var(--text-secondary); }
+.admin-console { background: var(--bg-surface); border: 1px solid var(--border-faint); border-radius: var(--r-lg); padding: var(--space-lg); margin-bottom: var(--space-lg); }
+.admin-section-heading { display: flex; align-items: center; justify-content: space-between; gap: var(--space-md); }
+.admin-player-tools { display: flex; align-items: center; flex-wrap: wrap; gap: var(--space-md); }
+.admin-console-grid { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(260px, .75fr); gap: var(--space-xl); margin-top: var(--space-md); }
+.admin-track-controls, .admin-volume-control { min-width: 0; }
+.admin-console .admin-volume-control { margin: 0; border-left: 1px solid var(--border-faint); padding-left: var(--space-xl); }
+.admin-console .song-row { gap: var(--space-md); }
+.admin-console .song-thumb { width: 60px; height: 60px; }
+.admin-console .song-title { font-size: 1rem; }
+.admin-console .empty-state { text-align: left; padding: var(--space-md) 0; }
+.admin-console .progress-row { margin-top: var(--space-sm); }
+.admin-transport { max-width: 380px; margin: var(--space-md) 0 0; }
+#pauseResumeBtn { background: var(--request-action); border-color: transparent; color: var(--action-ink); }
+#pauseResumeBtn:hover { background: var(--request-action-hover); }
+.admin-console .admin-volume-heading { gap: var(--space-md); }
+.admin-console .admin-volume-heading output { font-size: 1.1rem; }
+.admin-console input[type="range"] { margin-top: var(--space-sm); }
+.admin-workspace { display: grid; grid-template-columns: minmax(0, 1fr) 380px; gap: var(--space-lg); align-items: start; }
+.admin-queue { min-width: 0; background: var(--bg-surface); border: 1px solid var(--border-faint); border-radius: var(--r-lg); }
+.admin-queue-heading { padding: var(--space-md) var(--space-lg); border-bottom: 1px solid var(--border-faint); }
+.admin-queue-title { display: flex; align-items: center; gap: var(--space-sm); min-width: 0; }
+#clearQueueBtn { width: auto; min-height: 44px; padding: var(--space-sm) 12px; font-size: .78rem; flex-shrink: 0; }
+.admin-queue-list { max-height: 65dvh; min-height: 240px; overflow-y: auto; overscroll-behavior-y: contain; scrollbar-width: thin; padding: 0 var(--space-lg); }
+.admin-queue-list:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: -3px; }
+.admin-queue-list .song-row { padding-block: var(--space-md); }
+.admin-queue-list .song-row:last-child { border-bottom: 0; }
+.admin-queue-list .song-title { white-space: normal; overflow-wrap: anywhere; }
+.admin-queue-list .song-actions { gap: var(--space-xs); }
+.admin-queue-list .move-btn { color: var(--yt-red); background: var(--bg-raised); border-color: var(--border-faint); }
+.admin-queue-list .move-btn:disabled { opacity: .35; cursor: not-allowed; }
+.admin-queue-list .move-btn:disabled:hover { background: var(--bg-raised); border-color: var(--border-faint); }
+.admin-queue-list .empty-state { padding-block: 72px; }
+.admin-settings-stack { display: flex; flex-direction: column; gap: var(--space-lg); min-width: 0; }
+.admin-options { padding: 0; }
+.admin-options .admin-disclosure-content { gap: 0; padding-bottom: var(--space-xs); }
+.admin-options .toggle-row { gap: var(--space-md); }
+.admin-options .toggle-row:last-child { border-bottom: 0; }
+.admin-options .toggle-row-label { font-size: .86rem; }
+.admin-options .toggle-row-sub { font-size: .78rem; }
+.admin-disclosure { border: 1px solid var(--border-faint); border-radius: var(--r-md); background: var(--bg-surface); }
+.admin-disclosure summary { cursor: pointer; min-height: 52px; padding: 14px var(--space-md); font-size: .9rem; font-weight: 600; }
+.admin-disclosure summary::marker { color: var(--yt-red); }
+.admin-disclosure summary:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: -3px; border-radius: var(--r-md); }
+.admin-disclosure-content { padding: 0 var(--space-md) var(--space-md); display: flex; flex-direction: column; gap: var(--space-md); }
+.admin-disclosure .settings-field-label { font-size: .8rem; justify-content: space-between; }
+.admin-disclosure .settings-num-input { min-height: 44px; height: 44px; }
+.admin-disclosure .btn-primary { margin: 0; }
+.admin-connection .qr-card { border: 0; margin: 0; align-items: center; }
+.admin-connection .qr-card img { margin: 0; }
+.admin-shell > .site-footer { margin-top: var(--space-xl); }
+@media (min-width: 900px) {
+  .admin-shell { display: grid; grid-template-rows: auto minmax(0, 1fr) auto; gap: var(--space-md); height: 100dvh; min-height: 0; padding-block: var(--space-md); }
+  .admin-header { grid-row: 1; margin: 0; padding-bottom: 12px; }
+  #adminPanel { grid-row: 2; min-height: 0; height: 100%; }
+  .admin-dashboard { display: grid; grid-template-rows: auto minmax(0, 1fr); gap: var(--space-md); height: 100%; min-height: 0; }
+  .admin-console { padding: var(--space-md); margin: 0; }
+  .admin-console-grid { gap: var(--space-lg); margin-top: var(--space-sm); }
+  .admin-console .song-thumb { width: 44px; height: 44px; }
+  .admin-console .song-title { font-size: .9rem; }
+  .admin-console .admin-volume-control { padding-left: var(--space-lg); }
+  .admin-console .progress-row, .admin-transport { margin-top: var(--space-sm); }
+  .admin-console .empty-state { padding: var(--space-sm) 0; }
+  .admin-workspace { height: 100%; min-height: 0; align-items: stretch; }
+  .admin-queue { height: 100%; min-height: 0; }
+  .admin-queue-frame { display: flex; flex-direction: column; height: 100%; min-height: 0; }
+  .admin-queue-heading { flex-shrink: 0; padding-block: 12px; }
+  .admin-queue-list { flex: 1; min-height: 0; max-height: none; }
+  .admin-settings-stack { height: 100%; min-height: 0; overflow-y: auto; overscroll-behavior-y: contain; scrollbar-width: thin; padding-inline: var(--space-xs); }
+  .admin-settings-stack > * { flex-shrink: 0; }
+  .admin-settings-stack:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: -2px; }
+  .admin-shell > .site-footer { grid-row: 3; margin: 0; padding: 0; border: 0; font-size: .7rem; }
+  .admin-auth { grid-row: 2; width: 100%; min-height: 0; max-height: 100%; overflow-y: auto; align-self: center; margin: 0 auto; padding: var(--space-lg); }
+}
+@media (max-width: 1100px) {
+  .admin-workspace { grid-template-columns: minmax(0, 1fr) 320px; }
+  .admin-shell { padding-inline: var(--space-lg); }
+}
+@media (max-width: 899px) {
+  .admin-workspace { grid-template-columns: minmax(0, 1fr); }
+  .admin-settings-stack { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: start; }
+  .admin-connection { grid-column: 1 / -1; }
+  .admin-queue-list { max-height: 55dvh; }
+  .admin-console-grid { grid-template-columns: minmax(0, 1fr); gap: var(--space-lg); }
+  .admin-console .admin-volume-control { border-left: 0; border-top: 1px solid var(--border-faint); padding: var(--space-md) 0 0; }
+}
+@media (max-width: 599px) {
+  .admin-shell { padding: var(--space-md); }
+  .admin-header { gap: var(--space-sm); margin-bottom: var(--space-lg); }
+  .admin-header .brand-text h1 { font-size: 1rem; }
+  .admin-header .brand-text p { font-size: .7rem; }
+  .admin-header .brand-mark { width: 36px; height: 36px; }
+  .admin-header .header-actions { gap: var(--space-sm); }
+  .admin-home-link { font-size: .75rem; }
+  .admin-console { padding: var(--space-md); }
+  .admin-console > .admin-section-heading { align-items: start; flex-wrap: wrap; gap: var(--space-xs); }
+  .admin-player-tools { gap: var(--space-sm); }
+  .admin-console .song-thumb { width: 48px; height: 48px; }
+  .admin-transport { max-width: none; }
+  .admin-queue-heading { padding-inline: var(--space-md); flex-wrap: wrap; gap: var(--space-sm); }
+  .admin-queue-list { padding-inline: var(--space-md); }
+  .admin-settings-stack { display: flex; align-items: stretch; }
+  .admin-queue-list .song-title { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; overflow: hidden; }
+  .admin-queue-list .song-row { flex-wrap: wrap; }
+  .admin-queue-list .song-actions { width: 100%; justify-content: flex-end; margin-top: var(--space-xs); }
+  .admin-auth { padding: var(--space-lg); }
+}
+@media (max-width: 359px) {
+  .admin-header { flex-wrap: wrap; }
+  .admin-header .header-actions { margin-left: auto; }
+  .admin-queue-heading { align-items: start; flex-direction: column; }
+}

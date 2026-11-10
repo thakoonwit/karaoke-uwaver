@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Uwaver Karaoke — เลือกเพลงคาราโอเกะและต่อคิวร้องจากมือถือ">
+  <title>Uwaver Karaoke — เลือกเพลงคาราโอเกะ</title>
+  <link rel="icon" type="image/png" href="/logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@400;500;600;700&amp;family=Roboto:wght@400;500;700&amp;display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/css/ui.css">
+  <link rel="stylesheet" href="/css/request.css">
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="/js/room-context.js"></script>
+  <link rel="stylesheet" href="/css/rooms.css">
+</head>
+<body class="request-page">
+<div class="app-layout">
+
+  <!-- ── LEFT COL: YouTube Music Player + Request Form ── -->
+    <!-- Header -->
+    <header class="site-header">
+      <div class="brand">
+        <img src="/logo.png" class="brand-mark" alt="โลโก้ Uwaver Karaoke" width="48" height="48">
+        <div class="brand-text">
+          <h1>Uwaver Karaoke</h1>
+          <p>เลือกเพลงผ่านมือถือ แล้วร้องด้วยกัน</p>
+        </div>
+      </div>
+      <div class="header-actions">
+        <button id="themeToggleBtn" aria-label="สลับโหมดสี" class="icon-btn-bare" title="สลับโหมด">
+          <svg class="svg-icon" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+        </button>
+        <button id="profileSettingsBtn" type="button" aria-label="ตั้งค่าของคุณ" class="icon-btn-bare" title="ตั้งค่าและแก้ชื่อผู้ร้อง">
+          <svg class="svg-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+        </button>
+      </div>
+    </header>
+
+
+
+  <!-- ── RIGHT COL: YouTube Music Queue & Library ── -->
+  <div class="col-right">
+
+    <!-- YouTube Music Request Form Section -->
+    <div class="request-block">
+      <h2 class="request-heading">อยากร้องเพลงอะไร?</h2>
+      <p class="request-description">เลือกเพลงที่ใช่ แล้วเตรียมขึ้นร้องด้วยกัน</p>
+
+      <form id="requestForm">
+        <input type="hidden" id="nicknameInput">
+
+        <div class="form-field song-search-field">
+          <label class="field-label" for="songQueryInput">เพลงที่อยากร้อง</label>
+          <svg class="svg-icon search-field-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m16 16 4 4"/></svg>
+          <input type="search" id="songQueryInput" class="text-input" placeholder="ชื่อเพลง ศิลปิน หรือลิงก์ YouTube" required autocomplete="off" enterkeyhint="search" maxlength="500">
+        </div>
+
+        <label class="karaoke-search-option">
+          <span class="karaoke-mode-copy"><span id="karaokeModeTitle">ค้นหาเวอร์ชันคาราโอเกะ</span><small id="karaokeModeHint">สำหรับร้องตามบนจอหลัก</small></span>
+          <input type="checkbox" role="switch" id="karaokeSearchInput" aria-labelledby="karaokeModeTitle" aria-describedby="karaokeModeHint" checked>
+          <span class="karaoke-switch-track" aria-hidden="true"><span></span></span>
+        </label>
+        <button type="submit" id="submitRequestBtn" class="btn-primary">
+          <svg class="svg-icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+          <span>ค้นหาเพลง</span>
+        </button>
+      </form>
+    </div>
+
+
+
+  <div class="col-left">
+
+    <!-- YouTube Music Now Playing Section -->
+    <div class="now-playing-block">
+      <div class="section-label">
+        <span>กำลังร้อง</span>
+        <div style="display:flex;gap:6px;">
+          <span id="playerStatusBadge" class="badge offline">
+            <span class="dot-offline" id="playerStatusDot"></span>
+            <span id="playerStatusText">Player ออฟไลน์</span>
+          </span>
+          <span id="acceptingBadge" class="badge locked" style="display:none;">🔒 ปิดรับ</span>
+        </div>
+      </div>
+
+      <div id="nowPlayingContainer">
+        <!-- Default idle state -->
+        <p class="request-idle">ยังไม่มีเพลงกำลังร้อง เลือกเพลงแรกกันเลย</p>
+      </div>
+    </div>
+
+  </div><!-- /col-left -->
+
+    <section class="library-panel" aria-label="คิวและคลังเพลงคาราโอเกะ">
+    <!-- Desktop header for right col -->
+    <div class="desktop-right-header">
+      <span class="right-header-title">คิวร้องเพลง</span>
+      <div class="library-header-actions">
+        <span id="queueCountBadge" class="badge">0 เพลงในคิว</span>
+      </div>
+    </div>
+
+    <!-- YouTube Music Tab Pills -->
+    <div class="tab-bar">
+      <button class="tab-btn active" data-tab="queue">คิวเพลง</button>
+      <button class="tab-btn" data-tab="fav">เพลงโปรด</button>
+      <button class="tab-btn" data-tab="history">เคยขอ</button>
+      <button class="tab-btn" data-tab="top">เพลงฮิต</button>
+      <button class="tab-btn" data-tab="today" title="ประวัติวันนี้ของทุกคน">วันนี้</button>
+    </div>
+
+    <p id="userReorderHint" class="user-reorder-hint" hidden>ทุกคนจัดคิวได้ · จับปุ่มจุดแล้วลากเพลงไปตำแหน่งที่ต้องการ</p>
+    <p id="queueDragHelp" class="request-sr-only">จับปุ่มจัดคิวแล้วลาก หรือใช้ปุ่มลูกศรขึ้นและลงบนคีย์บอร์ด</p>
+    <p id="queueOrderStatus" class="request-sr-only" role="status" aria-live="polite"></p>
+    <div id="tabQueue" class="tab-panel active" tabindex="0" role="region" aria-label="คิวเพลง เลื่อนเพื่อดูเพิ่มเติม">
+      <div id="queueContainer">
+        <p class="empty-state">รอรายการเพลงจากทุกคน 🎧</p>
+      </div>
+    </div>
+
+    <div id="tabFav" class="tab-panel" tabindex="0" role="region" aria-label="เพลงโปรด">
+      <div id="favListContainer">
+        <p class="empty-state">ยังไม่มีเพลงโปรด — กด ❤️ ในรายการเพลงเพื่อบันทึก</p>
+      </div>
+    </div>
+
+    <div id="tabHistory" class="tab-panel" tabindex="0" role="region" aria-label="ประวัติที่ขอ">
+      <div id="historyListContainer">
+        <p class="empty-state">ยังไม่มีประวัติการขอเพลง</p>
+      </div>
+    </div>
+
+    <div id="tabTop" class="tab-panel" tabindex="0" role="region" aria-label="เพลงฮิต">
+      <section class="hit-catalog" aria-labelledby="hitCatalogTitle">
+        <div class="hit-catalog-heading"><h2 id="hitCatalogTitle">เพลงฮิตน่าร้อง</h2><span id="hitCatalogCount"></span></div>
+        <p class="hit-catalog-description">เลือกตามอารมณ์ แล้วค้นหาเวอร์ชันที่จะร้อง</p>
+        <label class="field-label" for="hitCatalogSearch">ค้นหาในลิสต์</label>
+        <input id="hitCatalogSearch" type="search" class="text-input" placeholder="ชื่อเพลงหรือศิลปินในลิสต์" autocomplete="off">
+        <div id="hitCatalogCategories" class="hit-catalog-categories" role="group" aria-label="หมวดเพลง"></div>
+        <p id="hitCatalogStatus" class="hit-catalog-status" role="status">กำลังโหลดลิสต์เพลง…</p>
+        <button id="hitCatalogRetry" type="button" class="btn-secondary" hidden>ลองโหลดอีกครั้ง</button>
+        <ol id="hitCatalogList" class="hit-catalog-list" aria-label="เพลงน่าร้อง"></ol>
+        <p id="hitCatalogSentinel" class="hit-catalog-sentinel" role="status" hidden></p>
+      </section>
+      <details class="room-hits-details">
+        <summary>เพลงที่ห้องนี้ร้องบ่อย</summary>
+        <div id="topChartListContainer"><p class="empty-state">ยังไม่มีข้อมูลเพลงฮิต</p></div>
+      </details>
+    </div>
+
+    <section id="tabToday" class="tab-panel" tabindex="0" aria-labelledby="sharedHistoryHeading">
+      <div class="history-heading shared-history-heading">
+        <div>
+          <h2 id="sharedHistoryHeading">ประวัติวันนี้ของทุกคน</h2>
+          <p id="historyDate" class="history-description"></p>
+        </div>
+        <button id="historyRefreshBtn" class="btn-secondary">รีเฟรชรายการ</button>
+      </div>
+      <div class="history-summary">
+        <span id="historyCount">กำลังโหลดประวัติ…</span>
+        <span class="history-description">ล่าสุดก่อน · เวลาไทย</span>
+      </div>
+      <p id="historyStatus" class="history-status" role="status" aria-live="polite">กำลังโหลดประวัติ…</p>
+      <ol id="sharedHistoryList" class="song-list history-list" aria-label="ประวัติเพลงที่ทุกคนขอวันนี้"></ol>
+    </section>
+    </section><!-- /library-panel -->
+
+    <!-- Footer Credit -->
+    <footer class="site-footer">
+      <p>Powered by <a href="https://uwaver.site" target="_blank" rel="noopener noreferrer">Uwaver.site</a></p>
+    </footer>
+
+  </div><!-- /col-right -->
+
+</div><!-- /app-layout -->
+
+<!-- Search Bottom Sheet Modal -->
+<div id="searchModal" class="modal-backdrop" aria-hidden="true" inert>
+  <div class="modal-sheet" role="dialog" aria-modal="true" aria-labelledby="modalTitle" tabindex="-1">
+    <div class="modal-handle"></div>
+    <div class="modal-header">
+      <span class="modal-title" id="modalTitle">เลือกเพลงที่ต้องการ</span>
+      <button id="closeModalBtn" aria-label="ปิดรายการค้นหา" class="modal-close">&times;</button>
+    </div>
+    <div id="playlistBanner" class="playlist-banner" style="display:none;"></div>
+    <div id="searchResultsList" class="result-list"></div>
+  </div>
+</div>
+
+<!-- Toast Stack -->
+<div id="toastContainer" class="toast-stack"></div>
+
+<dialog id="profileDialog" class="profile-dialog" aria-labelledby="profileTitle" aria-describedby="profileDescription">
+  <form id="profileForm" novalidate>
+    <div class="profile-dialog-header">
+      <h2 id="profileTitle">ให้เรียกคุณว่าอะไรดี?</h2>
+      <button type="button" id="profileCloseBtn" class="modal-close" aria-label="ปิดตั้งค่า">&times;</button>
+    </div>
+    <p id="profileDescription" class="profile-description">ใส่ชื่อที่จะแสดงในคิวเพลง ครั้งต่อไปไม่ต้องกรอกอีก</p>
+    <label class="field-label" for="profileNameInput">ชื่อผู้ร้อง</label>
+    <input id="profileNameInput" type="text" class="text-input" placeholder="ชื่อเล่นของคุณ" maxlength="20" required autocomplete="nickname" enterkeyhint="done" autofocus aria-describedby="profileNameHint profileError">
+    <p id="profileNameHint" class="profile-hint">ไม่เกิน 20 ตัวอักษร · จำไว้ในเบราว์เซอร์นี้</p>
+    <p id="profileError" class="profile-error" role="alert" hidden></p>
+    <button type="submit" id="profileSaveBtn" class="btn-primary">บันทึกและเริ่มเลือกเพลง</button>
+    <p id="profileQueueNote" class="profile-hint" hidden>ชื่อใหม่จะใช้กับเพลงที่ขอครั้งถัดไป เพลงในคิวแล้วจะใช้ชื่อเดิม</p>
+    <a href="/admin" class="profile-admin-link">สำหรับผู้ดูแล · จัดการจอและคิวเพลง</a>
+  </form>
+</dialog>
+
+<script src="/js/profile.js"></script>
+<script src="/js/queue-drag.js"></script>
+<script src="/js/app.js"></script>
+<script src="/js/hit-catalog.js"></script>
+<script src="/js/history.js"></script>
+</body>
+</html>

@@ -1,0 +1,1299 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,400;0,500;0,700;1,400&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap');
+
+/* ─────────────────────────────────────────────
+   VRS Radio — YouTube Music Design System
+   Designed for API & VRS Office Radio
+   ───────────────────────────────────────────── */
+
+:root {
+  /* YouTube Music Pitch Dark Palette */
+  --bg-base:      #030303;
+  --bg-surface:   #0f0f0f;
+  --bg-raised:    #212121;
+  --bg-input:     #121212;
+  --bg-chip:      rgba(255, 255, 255, 0.1);
+
+  /* YouTube Music Accent & Borders */
+  --yt-red:        #ff0000;
+  --yt-red-glow:   rgba(255, 0, 0, 0.35);
+  --brand-pink:    #d946ef;
+  --brand-grad:    linear-gradient(135deg, #ff0000 0%, #c026d3 100%);
+  
+  --border-faint:  rgba(255, 255, 255, 0.08);
+  --border-subtle: rgba(255, 255, 255, 0.14);
+  --border-mid:    rgba(255, 255, 255, 0.22);
+
+  /* Typography */
+  --text-primary:   #ffffff;
+  --text-secondary: #aaa;
+  --text-tertiary:  #717171;
+
+  /* Status Colors */
+  --green:  #2ba640;
+  --red:    #ff4e45;
+  --amber:  #ff8c00;
+
+  /* Radius (YouTube Music Standard) */
+  --r-sm:  8px;
+  --r-md:  12px;
+  --r-lg:  16px;
+  --r-pill: 9999px;
+
+  /* Fonts */
+  --font-yt: 'Roboto', 'Plus Jakarta Sans', system-ui, sans-serif;
+}
+
+[data-theme="light"] {
+  --bg-base:      #f9f9f9;
+  --bg-surface:   #ffffff;
+  --bg-raised:    #f1f1f1;
+  --bg-input:     #e5e5e5;
+  --bg-chip:      rgba(0, 0, 0, 0.06);
+
+  --border-faint:  rgba(0, 0, 0, 0.06);
+  --border-subtle: rgba(0, 0, 0, 0.12);
+  --border-mid:    rgba(0, 0, 0, 0.20);
+
+  --text-primary:  #0f0f0f;
+  --text-secondary: #606060;
+  --text-tertiary:  #909090;
+}
+
+/* Reset */
+.admin-volume-control { margin-bottom: 20px; }
+.admin-volume-heading { display: flex; justify-content: space-between; gap: 16px; align-items: center; }
+.admin-volume-heading output { color: var(--text-primary); font-variant-numeric: tabular-nums; }
+.admin-volume-control input[type="range"] { display: block; width: 100%; min-height: 44px; accent-color: var(--yt-red); cursor: pointer; }
+.admin-volume-control input:focus-visible { outline: 2px solid var(--text-primary); outline-offset: 2px; }
+.admin-volume-control input:disabled { cursor: wait; opacity: 0.5; }
+.admin-volume-control .toggle-row-sub { color: var(--text-secondary); }
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: var(--font-yt);
+  background-color: var(--bg-base);
+  color: var(--text-primary);
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+  line-height: 1.4;
+}
+
+/* ─── Responsive Layout System ───────────────── */
+.app-layout {
+  display: grid;
+  grid-template-columns: 1fr;
+  min-height: 100vh;
+  width: 100%;
+  max-width: 560px;
+  margin: 0 auto;
+  padding: 0 16px;
+}
+
+.col-left, .col-right {
+  padding-top: 16px;
+  padding-bottom: 24px;
+  width: 100%;
+}
+
+@media (min-width: 900px) {
+  .app-layout {
+    grid-template-columns: 380px 1fr;
+    max-width: 1240px;
+    margin: 0 auto;
+    padding: 0 32px;
+    gap: 0;
+  }
+  
+  .col-left {
+    border-right: 1px solid var(--border-faint);
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow-y: auto;
+    scrollbar-width: none;
+    padding-top: 24px;
+    padding-bottom: 24px;
+    padding-right: 28px;
+    padding-left: 0;
+  }
+  .col-left::-webkit-scrollbar { display: none; }
+
+  .col-right {
+    padding-top: 24px;
+    padding-bottom: 24px;
+    padding-left: 28px;
+    padding-right: 0;
+    overflow-y: auto;
+  }
+
+  .desktop-right-header { display: flex !important; }
+}
+
+@media (max-width: 360px) {
+  .app-layout { padding: 0 10px; }
+  .vinyl-disc-container { width: 140px; height: 140px; }
+}
+
+/* YouTube Music Style Top Header */
+.site-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 16px;
+  margin-bottom: 20px;
+  border-bottom: 1px solid var(--border-faint);
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.brand-logo {
+  height: 34px;
+  width: auto;
+  border-radius: 6px;
+  background: #ffffff;
+  padding: 3px 8px;
+}
+
+.brand-text h1 {
+  font-size: 1.05rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.yt-music-badge {
+  font-size: 0.65rem;
+  font-weight: 700;
+  background: var(--yt-red);
+  color: #ffffff;
+  padding: 1px 6px;
+  border-radius: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.brand-text p {
+  font-size: 0.72rem;
+  color: var(--text-secondary);
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.icon-btn-bare {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--bg-raised);
+  border: 1px solid var(--border-faint);
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background 0.15s;
+}
+.icon-btn-bare:hover { background: rgba(255, 255, 255, 0.2); }
+
+/* YouTube Music Now Playing Hero Card */
+.now-playing-block {
+  margin-bottom: 24px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-faint);
+  border-radius: var(--r-lg);
+  padding: 20px;
+}
+
+.section-label {
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* Centered YouTube Music Vinyl Disc & Player */
+.player-centered-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.vinyl-disc-container {
+  width: 180px;
+  height: 180px;
+  position: relative;
+  margin: 0 auto 16px;
+  flex-shrink: 0;
+}
+
+.vinyl-record {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  position: relative;
+  background: radial-gradient(circle, #1f1f1f 20%, #080808 70%, #292929 100%);
+  padding: 5px;
+  border: 2px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8), 0 0 20px var(--yt-red-glow);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.vinyl-record.spinning {
+  animation: spinVinyl 12s linear infinite;
+}
+
+@keyframes spinVinyl {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.vinyl-cover {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.vinyl-center-hole {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 24px;
+  height: 24px;
+  background: var(--bg-base);
+  border: 3px solid rgba(255, 255, 255, 0.9);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.player-meta-centered {
+  width: 100%;
+  text-align: center;
+}
+
+.player-status-line {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  margin-bottom: 6px;
+}
+
+.dot-live {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--yt-red);
+  flex-shrink: 0;
+  animation: pulse-dot 1.8s ease-in-out infinite;
+}
+
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+
+.dot-offline { background: var(--text-tertiary); animation: none; }
+
+.player-status-text {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--text-secondary);
+}
+
+.player-song-title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  line-height: 1.3;
+  margin-bottom: 4px;
+  text-align: center;
+}
+
+.player-requester {
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+  text-align: center;
+}
+
+/* YouTube Red Progress Bar */
+.progress-row {
+  margin-top: 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.progress-track {
+  flex: 1;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 2px;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.progress-fill {
+  height: 100%;
+  width: 0%;
+  background: var(--yt-red);
+  transition: width 0.9s linear;
+}
+
+.progress-time {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--text-secondary);
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+  min-width: 32px;
+}
+
+/* Reaction Strip (YouTube Music Action Style) */
+.reaction-strip {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 16px;
+  padding-top: 14px;
+  border-top: 1px solid var(--border-faint);
+}
+
+.rxn-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--bg-raised);
+  border: 1px solid var(--border-faint);
+  color: var(--text-primary);
+  font-size: 1.1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s, transform 0.1s;
+}
+
+.rxn-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+  border-color: var(--yt-red);
+}
+
+.rxn-btn:active { transform: scale(0.92); }
+
+/* YouTube Music Request Form */
+.request-block {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-faint);
+  border-radius: var(--r-lg);
+  padding: 20px;
+  margin-bottom: 24px;
+}
+
+.form-field + .form-field { margin-top: 12px; }
+
+.field-label {
+  display: block;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  margin-bottom: 6px;
+}
+
+.text-input {
+  width: 100%;
+  height: 44px;
+  padding: 0 14px;
+  background: var(--bg-input);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--r-sm);
+  color: var(--text-primary);
+  font-family: var(--font-yt);
+  font-size: 0.9rem;
+  font-weight: 500;
+  outline: none;
+  transition: border-color 0.15s;
+}
+
+.text-input::placeholder { color: var(--text-tertiary); }
+.text-input:focus { border-color: var(--text-primary); }
+
+/* YouTube Music Chips Carousel Bar */
+.mood-row {
+  margin-top: 8px;
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+  scrollbar-width: none;
+}
+.mood-row::-webkit-scrollbar { display: none; }
+
+.mood-chip {
+  flex-shrink: 0;
+  height: 32px;
+  padding: 0 14px;
+  border-radius: 8px;
+  background: var(--bg-chip);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: var(--text-primary);
+  font-family: var(--font-yt);
+  font-size: 0.8rem;
+  font-weight: 500;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.15s, color 0.15s;
+}
+
+.mood-chip:hover {
+  background: #ffffff;
+  color: #000000;
+}
+
+.btn-primary {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  height: 44px;
+  margin-top: 16px;
+  border-radius: var(--r-pill);
+  border: none;
+  background: #ffffff;
+  color: #000000;
+  font-family: var(--font-yt);
+  font-size: 0.9rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.15s, opacity 0.15s;
+}
+
+.btn-primary:hover { background: #f0f0f0; }
+.btn-primary:active { opacity: 0.8; }
+.btn-primary:disabled { opacity: 0.4; cursor: not-allowed; }
+
+/* Status Badges */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 8px;
+  border-radius: 4px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  border: 1px solid var(--border-faint);
+  background: var(--bg-raised);
+  color: var(--text-secondary);
+}
+
+.badge.online { color: var(--green); border-color: rgba(43, 166, 64, 0.4); background: rgba(43, 166, 64, 0.1); }
+.badge.offline { color: var(--text-tertiary); }
+.badge.locked { color: var(--amber); border-color: rgba(255, 140, 0, 0.4); background: rgba(255, 140, 0, 0.1); }
+
+/* YouTube Music Floating Reactions */
+.floating-emoji {
+  position: fixed;
+  font-size: 2rem;
+  pointer-events: none;
+  z-index: 9999;
+  animation: floatUp 1.8s ease-out forwards;
+}
+
+@keyframes floatUp {
+  0% { opacity: 1; transform: translateY(0) scale(0.8); }
+  60% { opacity: 1; transform: translateY(-80px) scale(1.1); }
+  100% { opacity: 0; transform: translateY(-150px) scale(1); }
+}
+
+/* Desktop Right Column Header */
+.desktop-right-header {
+  display: none;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 16px;
+  margin-bottom: 20px;
+  border-bottom: 1px solid var(--border-faint);
+}
+
+.right-header-title {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+/* YouTube Music Tab Pills */
+.tab-bar {
+  display: flex;
+  gap: 8px;
+  padding: 4px;
+  background: transparent;
+  overflow-x: auto;
+  scrollbar-width: none;
+  margin-bottom: 16px;
+}
+.tab-bar::-webkit-scrollbar { display: none; }
+
+.tab-btn {
+  flex-shrink: 0;
+  height: 34px;
+  padding: 0 16px;
+  background: var(--bg-chip);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: var(--r-pill);
+  color: var(--text-primary);
+  font-family: var(--font-yt);
+  font-size: 0.82rem;
+  font-weight: 500;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.15s, color 0.15s;
+}
+
+.tab-btn.active {
+  background: #ffffff;
+  color: #000000;
+  font-weight: 700;
+}
+
+.tab-panel { display: none; }
+.tab-panel.active { display: block; }
+
+/* YouTube Music Track List Rows */
+.song-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.song-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 12px;
+  border-radius: var(--r-sm);
+  background: var(--bg-surface);
+  border: 1px solid var(--border-faint);
+  transition: background 0.15s;
+}
+
+.song-row:hover {
+  background: var(--bg-raised);
+}
+
+.song-rank {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--text-secondary);
+  width: 20px;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+.song-thumb {
+  width: 44px;
+  height: 44px;
+  border-radius: 4px;
+  object-fit: cover;
+  background: var(--bg-raised);
+  flex-shrink: 0;
+}
+
+.song-info { flex: 1; min-width: 0; }
+
+.song-title {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.3;
+}
+
+.song-meta {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  margin-top: 2px;
+}
+
+.song-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.btn-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--bg-raised);
+  border: 1px solid var(--border-faint);
+  color: var(--text-primary);
+  font-size: 0.85rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s;
+}
+
+.btn-icon:hover { background: rgba(255, 255, 255, 0.2); }
+.btn-icon.active-fav { color: var(--yt-red); border-color: var(--yt-red); }
+.btn-icon.danger { color: var(--red); border-color: rgba(255, 78, 69, 0.3); }
+
+.empty-state {
+  padding: 32px 0;
+  text-align: center;
+  color: var(--text-secondary);
+  font-size: 0.85rem;
+}
+
+/* SVG Icon System */
+.svg-icon {
+  width: 16px;
+  height: 16px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  flex-shrink: 0;
+  display: inline-block;
+}
+
+/* Bottom Sheet Modal */
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.8);
+  z-index: 900;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+}
+
+.modal-backdrop.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.modal-sheet {
+  background: var(--bg-surface);
+  width: 100%;
+  max-width: 520px;
+  max-height: 80vh;
+  border-radius: var(--r-lg) var(--r-lg) 0 0;
+  border: 1px solid var(--border-mid);
+  border-bottom: none;
+  overflow-y: auto;
+  padding: 20px;
+  transform: translateY(100%);
+  transition: transform 0.25s cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+.modal-backdrop.active .modal-sheet { transform: translateY(0); }
+
+.modal-handle {
+  width: 36px;
+  height: 4px;
+  background: var(--border-mid);
+  border-radius: 2px;
+  margin: 0 auto 16px;
+}
+
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+}
+
+.modal-title { font-size: 1rem; font-weight: 700; color: var(--text-primary); }
+
+.modal-close {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--bg-raised);
+  border: 1px solid var(--border-faint);
+  color: var(--text-primary);
+  font-size: 1.1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.result-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.result-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 12px;
+  border-radius: var(--r-sm);
+  background: var(--bg-input);
+  border: 1px solid var(--border-faint);
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.result-row:hover { background: var(--bg-raised); }
+.result-thumb { width: 52px; height: 40px; border-radius: 4px; object-fit: cover; flex-shrink: 0; }
+.result-info { flex: 1; min-width: 0; }
+.result-title { font-size: 0.85rem; font-weight: 600; color: var(--text-primary); }
+.result-meta { font-size: 0.75rem; color: var(--text-secondary); }
+.result-add { width: 30px; height: 30px; border-radius: 50%; background: #ffffff; color: #000000; border: none; font-size: 1rem; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+
+/* Playlist Banner in Modal */
+.playlist-banner {
+  background: var(--bg-surface);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: var(--r-md);
+  padding: 14px;
+  margin-bottom: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+}
+
+.playlist-banner-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.playlist-banner-thumb {
+  width: 56px;
+  height: 56px;
+  border-radius: 8px;
+  object-fit: cover;
+  flex-shrink: 0;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+}
+
+.playlist-banner-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.playlist-badge {
+  display: inline-block;
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: var(--yt-red);
+  background: rgba(255, 0, 0, 0.15);
+  padding: 2px 8px;
+  border-radius: var(--r-pill);
+  margin-bottom: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.playlist-banner-title {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  line-height: 1.3;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+.playlist-banner-meta {
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+  margin-top: 2px;
+}
+
+.playlist-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding-top: 8px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.playlist-counter {
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+
+.playlist-counter strong {
+  color: var(--text-primary);
+  font-weight: 700;
+}
+
+.playlist-quick-actions {
+  display: flex;
+  gap: 6px;
+}
+
+.playlist-chip-btn {
+  padding: 5px 10px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  border-radius: var(--r-pill);
+  background: var(--bg-raised);
+  color: var(--text-primary);
+  border: 1px solid var(--border-faint);
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.playlist-chip-btn:hover {
+  background: rgba(255, 255, 255, 0.15);
+  border-color: var(--border-mid);
+}
+
+.playlist-add-all-btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 11px 16px;
+  background: var(--yt-red);
+  color: #ffffff;
+  border: none;
+  border-radius: var(--r-pill);
+  font-family: var(--font-yt);
+  font-size: 0.88rem;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(255, 0, 0, 0.35);
+  transition: transform 0.15s, background 0.15s;
+}
+
+.playlist-add-all-btn:hover {
+  background: #cc0000;
+  transform: translateY(-1px);
+}
+
+.playlist-add-all-btn:active {
+  transform: scale(0.98);
+}
+
+.playlist-add-all-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+  background: #555555;
+  box-shadow: none;
+}
+
+/* Multi-select Row & Checkbox */
+.result-row.selectable {
+  user-select: none;
+  -webkit-user-select: none;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.result-row.selectable.selected {
+  border-color: rgba(255, 0, 0, 0.6);
+  background: rgba(255, 0, 0, 0.1);
+}
+
+.result-checkbox {
+  width: 22px;
+  height: 22px;
+  border-radius: 6px;
+  border: 2px solid var(--border-mid);
+  background: var(--bg-input);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: all 0.15s ease;
+}
+
+.result-row.selected .result-checkbox {
+  background: var(--yt-red);
+  border-color: var(--yt-red);
+}
+
+.result-checkbox svg {
+  display: none;
+  width: 12px;
+  height: 12px;
+  stroke: #ffffff;
+  stroke-width: 3;
+  fill: none;
+}
+
+.result-row.selected .result-checkbox svg {
+  display: block;
+}
+
+@media (max-width: 600px) {
+  .modal-sheet {
+    max-height: 90vh;
+    padding: 14px 12px 24px;
+    border-radius: 20px 20px 0 0;
+  }
+  
+  .playlist-banner {
+    padding: 12px;
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+
+  .playlist-banner-thumb {
+    width: 48px;
+    height: 48px;
+  }
+
+  .playlist-banner-title {
+    font-size: 0.88rem;
+  }
+
+  .playlist-add-all-btn {
+    padding: 12px 14px;
+    font-size: 0.85rem;
+  }
+
+  .playlist-toolbar {
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .playlist-chip-btn {
+    padding: 4px 8px;
+    font-size: 0.72rem;
+  }
+
+  .result-row {
+    padding: 8px 10px;
+    gap: 10px;
+  }
+
+  .result-thumb {
+    width: 48px;
+    height: 36px;
+  }
+
+  .result-title {
+    font-size: 0.82rem;
+  }
+
+  .result-add {
+    width: 34px;
+    height: 34px;
+  }
+}
+
+/* Toast Notifications */
+.toast-stack {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 9990;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: calc(100% - 32px);
+  max-width: 380px;
+  pointer-events: none;
+}
+
+.toast {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 16px;
+  border-radius: var(--r-sm);
+  background: var(--bg-raised);
+  border: 1px solid var(--border-mid);
+  color: var(--text-primary);
+  font-size: 0.85rem;
+  font-weight: 600;
+  pointer-events: auto;
+}
+
+.toast.success { border-left: 4px solid var(--green); }
+.toast.error   { border-left: 4px solid var(--red); }
+.toast.info    { border-left: 4px solid var(--yt-red); }
+
+/* Admin & Player Control Box */
+.auth-box {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-faint);
+  border-radius: var(--r-lg);
+  padding: 32px 24px;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.auth-icon { font-size: 2.2rem; margin-bottom: 12px; }
+.auth-box h2 { font-size: 1.1rem; font-weight: 700; margin-bottom: 6px; }
+.auth-box p { font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 20px; }
+
+.control-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.btn-secondary {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 42px;
+  padding: 0 16px;
+  border-radius: var(--r-pill);
+  background: var(--bg-raised);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-primary);
+  font-family: var(--font-yt);
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  width: 100%;
+}
+
+.btn-secondary:hover { background: rgba(255, 255, 255, 0.2); }
+
+.btn-danger {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 42px;
+  padding: 0 16px;
+  border-radius: var(--r-pill);
+  background: rgba(255, 78, 69, 0.12);
+  border: 1px solid rgba(255, 78, 69, 0.3);
+  color: var(--red);
+  font-family: var(--font-yt);
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  width: 100%;
+}
+
+.btn-danger:hover { background: rgba(255, 78, 69, 0.25); }
+
+/* Switch Toggle */
+.toggle-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--border-faint);
+}
+
+.toggle-row-label { font-size: 0.88rem; font-weight: 600; }
+.toggle-row-sub { font-size: 0.75rem; color: var(--text-secondary); margin-top: 2px; }
+
+.switch { position: relative; width: 44px; height: 24px; flex-shrink: 0; }
+.switch input { opacity: 0; width: 0; height: 0; }
+.slider {
+  position: absolute;
+  inset: 0;
+  border-radius: 24px;
+  background: var(--border-mid);
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.slider:before {
+  content: '';
+  position: absolute;
+  width: 18px; height: 18px;
+  border-radius: 50%;
+  background: #ffffff;
+  left: 3px; bottom: 3px;
+  transition: 0.2s;
+}
+
+input:checked + .slider { background: var(--yt-red); }
+input:checked + .slider:before { transform: translateX(20px); }
+
+/* Admin Settings Form Card */
+.admin-settings-card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-faint);
+  border-radius: var(--r-md);
+  padding: 14px;
+  margin-top: 14px;
+  margin-bottom: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.settings-card-title {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 2px;
+}
+
+.settings-field-row {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.settings-field-label {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.settings-field-hint {
+  font-size: 0.7rem;
+  font-weight: 400;
+  color: var(--text-tertiary);
+}
+
+.input-with-unit {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.input-with-unit .settings-num-input {
+  padding-right: 48px;
+}
+
+.input-unit {
+  position: absolute;
+  right: 12px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-tertiary);
+  pointer-events: none;
+}
+
+.settings-num-input {
+  width: 100%;
+  height: 38px;
+  padding: 0 12px;
+  border-radius: var(--r-sm);
+  background: var(--bg-input);
+  border: 1px solid var(--border-mid);
+  color: var(--text-primary);
+  font-family: var(--font-yt);
+  font-size: 0.88rem;
+  font-weight: 600;
+  outline: none;
+  transition: border-color 0.15s;
+}
+
+.settings-num-input:focus {
+  border-color: var(--yt-red);
+}
+
+.qr-card {
+  text-align: center;
+  padding: 20px 0 8px;
+  border-top: 1px solid var(--border-faint);
+  margin-top: 20px;
+}
+
+.qr-card img {
+  width: 150px; height: 150px;
+  border-radius: 8px;
+  border: 3px solid #ffffff;
+  margin-bottom: 12px;
+}
+
+.qr-url {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--yt-red);
+  word-break: break-all;
+}
+
+/* Footer Credit */
+.site-footer {
+  text-align: center;
+  padding: 24px 0 16px;
+  font-size: 0.78rem;
+  color: var(--text-tertiary);
+  border-top: 1px solid var(--border-faint);
+  margin-top: 24px;
+}
+
+.site-footer a {
+  color: var(--text-secondary);
+  font-weight: 600;
+  text-decoration: none;
+  transition: color 0.15s;
+}
+
+.site-footer a:hover {
+  color: var(--yt-red);
+  text-decoration: underline;
+}
+
+.video-wrapper {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16/9;
+  border-radius: var(--r-md);
+  background: var(--bg-raised);
+  overflow: hidden;
+  border: 1px solid var(--border-faint);
+  margin-bottom: 16px;
+}
+
+.video-wrapper iframe,
+.video-wrapper #youtube-player {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
