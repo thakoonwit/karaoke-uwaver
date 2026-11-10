@@ -71,12 +71,22 @@ test('real HTTP and Socket.IO isolate rooms, controls, QR codes and persisted st
     const list = await api('/api/rooms');
     assert.ok(list.rooms.every(room => !('pin' in room) && !('pinHash' in room) && !('salt' in room)));
     assert.equal((await api('/api/status', 'DEADBEEF')).status, 404);
+    const printedQr = new Map();
     for (const id of [roomA, roomB]) {
       const qr = await api('/api/qrcode', id);
       assert.equal(new URL(qr.requestUrl).searchParams.get('room'), id);
       assert.equal(new URL(qr.requestUrl).searchParams.has('pin'), false);
       assert.ok(qr.qrDataUrl.startsWith('data:image/png;base64,'));
+      const response = await fetch(origin + '/api/qrcode.svg?room=' + id);
+      assert.equal(response.status, 200);
+      assert.match(response.headers.get('content-type'), /image\/svg\+xml/);
+      const svg = await response.text();
+      assert.match(svg, /<svg[^>]+viewBox=/);
+      assert.equal(svg, await require('qrcode').toString(qr.requestUrl, { type: 'svg', margin: 4, errorCorrectionLevel: 'M' }));
+      printedQr.set(id, { svg, url: qr.requestUrl });
     }
+    assert.notEqual(printedQr.get(roomA).svg, printedQr.get(roomB).svg);
+    assert.equal((await fetch(origin + '/api/qrcode.svg?room=DEADBEEF')).status, 404);
     const watchA = await connect(roomA), watchB = await connect(roomB);
     assert.equal((await api('/api/request', roomA, song('aaaaaaaaaaa'))).success, true);
     assert.equal((await api('/api/request', roomA, song('bbbbbbbbbbb'))).success, true);
@@ -133,6 +143,10 @@ test('real HTTP and Socket.IO isolate rooms, controls, QR codes and persisted st
     assert.ok(!watchB.events.some(item => ['playerCommand', 'newReaction'].includes(item.event)));
     for (const client of clients) client.ws.terminate();
     await stop(); await boot();
+    for (const [id, printed] of printedQr) {
+      assert.equal((await api('/api/qrcode', id)).requestUrl, printed.url);
+      assert.equal(await (await fetch(origin + '/api/qrcode.svg?room=' + id)).text(), printed.svg);
+    }
     assert.equal((await api('/api/status', roomA)).playerState.volume, 33);
     assert.equal((await api('/api/status', roomA)).isUserReorderEnabled, true);
     assert.equal((await api('/api/status', roomB)).isUserReorderEnabled, false);

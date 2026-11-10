@@ -21,7 +21,9 @@
         const title = link(room.name, linkFor('/', room.id));
         const code = document.createElement('span'); code.textContent = room.id === 'main' ? 'ห้องหลัก' : room.id;
         info.append(title, code);
-        row.append(info, link('เข้าห้อง →', linkFor('/', room.id), 'room-enter-link'));
+        const actions = document.createElement('nav'); actions.className = 'room-row-actions'; actions.setAttribute('aria-label', room.name);
+        actions.append(link('QR / พิมพ์', linkFor('/room-qr.html', room.id), 'room-enter-link'), link('เข้าห้อง →', linkFor('/', room.id), 'room-enter-link'));
+        row.append(info, actions);
         list.append(row);
       }
       status.textContent = ''; status.hidden = true;
@@ -45,6 +47,7 @@
       document.getElementById('createdPlayerLink').href = linkFor('/player', room.id);
       document.getElementById('createdRequestLink').href = linkFor('/', room.id);
       document.getElementById('createdAdminLink').href = linkFor('/admin', room.id);
+      document.getElementById('createdPrintLink').href = linkFor('/room-qr.html', room.id);
       const roomUrl = document.getElementById('createdRoomUrl');
       roomUrl.value = new URL(linkFor('/', room.id), location.origin).href;
       document.getElementById('createdRoomQr').hidden = true;

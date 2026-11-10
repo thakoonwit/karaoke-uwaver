@@ -25,7 +25,9 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 
-const rooms = new RoomRegistry({ defaultQueue: queueManager, adminPin: ADMIN_PIN });
+const roomStore = process.env.ROOM_STORAGE === 'firestore' || process.env.FIREBASE_SERVICE_ACCOUNT_JSON
+  ? require('./room-store').fromEnv() : null;
+const rooms = new RoomRegistry({ defaultQueue: queueManager, adminPin: ADMIN_PIN, store: roomStore });
 const defaultRoom = rooms.resolve('main');
 const pinAttempts = new Map();
 
@@ -39,9 +41,9 @@ app.use((req, res, next) => {
 app.get('/', (req, res) => res.sendFile(path.join(__dirname, 'public', req.query.room ? 'index.html' : 'rooms.html')));
 app.get('/rooms', (req, res) => res.sendFile(path.join(__dirname, 'public', 'rooms.html')));
 app.get('/api/rooms', (req, res) => res.json({ success: true, rooms: rooms.list() }));
-app.post('/api/rooms', (req, res) => {
+app.post('/api/rooms', async (req, res) => {
   try {
-    const room = rooms.create(req.body.name, req.body.pin);
+    const room = await rooms.createPersisted(req.body.name, req.body.pin);
     res.status(201).json({ success: true, room });
   } catch (err) { res.status(400).json({ success: false, message: err.message }); }
 });
@@ -219,15 +221,28 @@ app.get('/api/history/today', (req, res) => {
   res.json({ success: true, ...queueManager.getTodayRequestHistory() });
 });
 
-/** GET /api/qrcode - Get QR code DataURL for local Wi-Fi URL */
+function roomRequestUrl(room) {
+  const url = new URL(requestUrl);
+  url.searchParams.set('room', room.id);
+  return url.href;
+}
+
+/** Vector QR for printing: fixed public URL and persisted room ID, no session or PIN. */
+app.get('/api/qrcode.svg', async (req, res) => {
+  try {
+    const room = req.karaokeRoom || defaultRoom;
+    const svg = await QRCode.toString(roomRequestUrl(room), { type: 'svg', margin: 4, errorCorrectionLevel: 'M' });
+    res.type('image/svg+xml').set('Content-Disposition', `inline; filename="karaoke-room-${room.id}.svg"`).send(svg);
+  } catch (err) { res.status(500).json({ success: false, error: err.message }); }
+});
+
+/** GET /api/qrcode - Static room-specific public request URL. */
 app.get('/api/qrcode', async (req, res) => {
   const room = req.karaokeRoom || defaultRoom;
-  const queueManager = room.queue;
   try {
-    const roomRequestUrl = new URL(requestUrl);
-    roomRequestUrl.searchParams.set('room', room.id);
-    const qrDataUrl = await QRCode.toDataURL(roomRequestUrl.href, { width: 300, margin: 4, errorCorrectionLevel: 'M' });
-    res.json({ success: true, localUrl, requestUrl: roomRequestUrl.href, room: rooms.publicInfo(room), qrDataUrl });
+    const url = roomRequestUrl(room);
+    const qrDataUrl = await QRCode.toDataURL(url, { width: 300, margin: 4, errorCorrectionLevel: 'M' });
+    res.json({ success: true, localUrl, requestUrl: url, room: rooms.publicInfo(room), qrDataUrl });
   } catch (err) {
     res.status(500).json({ success: false, error: err.message });
   }
@@ -522,7 +537,7 @@ app.get('/admin', (req, res) => {
 });
 
 // Start Server
-server.listen(PORT, () => {
+function startServer() { server.listen(PORT, () => {
   console.log('\n==================================================');
   console.log(`🎵 VRS Office Radio (Web YouTube Player Architecture)`);
   console.log(`💻 Local Machine Access:  http://localhost:${PORT}`);
@@ -530,4 +545,10 @@ server.listen(PORT, () => {
   console.log(`📻 Central Player Page:   ${localUrl}/player`);
   console.log(`⚙️  Admin Dashboard:       ${localUrl}/admin`);
   console.log('==================================================\n');
-});
+}); }
+if (roomStore) {
+  rooms.initialize().then(startServer).catch(err => {
+    console.error('Cannot start with Firestore room storage:', err.message);
+    process.exitCode = 1;
+  });
+} else startServer();

@@ -54,7 +54,7 @@
   function bindPage() {
     document.querySelectorAll('a[href]').forEach(link => {
       const href = link.getAttribute('href');
-      if (['/', '/player', '/admin', '/history'].includes(href)) link.href = url(href);
+      if (['/', '/player', '/admin', '/history', '/room-qr.html'].includes(href)) link.href = url(href);
     });
     fetch(url('/api/status')).then(response => response.json()).then(state => {
       if (!state.success || !state.room) return;

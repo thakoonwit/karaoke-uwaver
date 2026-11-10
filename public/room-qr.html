@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ป้าย QR ประจำห้อง · Uwaver Karaoke</title>
+  <link rel="icon" href="/logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/room-qr.css">
+</head>
+<body>
+  <main class="qr-workspace">
+    <nav class="qr-toolbar" aria-label="จัดการป้าย QR">
+      <a href="/rooms">กลับหน้าห้อง</a>
+      <div><a id="downloadQr" hidden>ดาวน์โหลด QR (SVG)</a><button id="printQr" type="button" disabled>พิมพ์ป้าย / บันทึก PDF</button></div>
+    </nav>
+    <p id="qrStatus" role="status">กำลังเตรียมป้าย QR…</p>
+    <button id="retryQr" type="button" hidden>ลองอีกครั้ง</button>
+    <article id="qrPoster" class="qr-poster" hidden aria-labelledby="qrRoomName">
+      <header><img src="/logo.png" alt="" width="36" height="36"><strong>Uwaver Karaoke</strong></header>
+      <h1 id="qrRoomName"></h1>
+      <p class="qr-invitation">อยากร้องเพลงไหน?<br><strong>สแกนแล้วขอเพลงได้เลย</strong></p>
+      <!-- impeccable-disable-next-line broken-image: room-qr.js assigns and decodes the room-specific SVG before revealing this poster. -->
+      <img id="posterQr" class="poster-qr" alt="QR Code เข้าหน้าขอเพลงของห้องนี้" width="400" height="400">
+      <p id="qrRoomCode" class="qr-room-code"></p>
+      <a id="qrRequestUrl" class="qr-request-url"></a>
+      <footer>เปิดกล้องมือถือ · สแกน QR · เลือกเพลงเข้าคิว</footer>
+    </article>
+    <p class="qr-note">ใช้ป้ายเดิมได้ทุกครั้งที่เปิดห้องนี้ ลิงก์ QR ไม่มีวันหมดอายุ<br>เก็บห้องเดิมและใช้โดเมนเดิม เพื่อให้ป้ายที่พิมพ์ไว้ยังใช้งานได้</p>
+  </main>
+  <script src="/js/room-qr.js"></script>
+</body>
+</html>

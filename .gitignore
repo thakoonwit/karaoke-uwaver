@@ -39,3 +39,7 @@ yarn-error.log*
 
 # Room definitions and queues
 data/rooms/
+
+# Firebase server credentials
+*service-account*.json
+*firebase-adminsdk*.json
